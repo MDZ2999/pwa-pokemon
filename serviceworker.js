@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pokepwa-v1';
+const CACHE_NAME = 'pokepwa-v2';
 const API_CACHE_NAME = 'pokepwa-api-v1';
 const APP_SHELL = [
 	'./',

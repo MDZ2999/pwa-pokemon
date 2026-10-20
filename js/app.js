@@ -2,7 +2,58 @@ const API_URL = 'https://pokeapi.co/api/v2/pokemon/';
 const pokemonList = document.querySelector('#pokemon-list');
 const pokemonStatus = document.querySelector('#pokemon-status');
 const loadMoreButton = document.querySelector('#load-more');
+const installButton = document.querySelector('#install-button');
+const installStatus = document.querySelector('#install-status');
 let nextPageUrl = API_URL;
+let installPromptEvent = null;
+
+if (installButton && installStatus) {
+	window.addEventListener('beforeinstallprompt', (event) => {
+		event.preventDefault();
+		installPromptEvent = event;
+		installButton.hidden = false;
+	});
+
+	installButton.addEventListener('click', () => {
+		if (!installPromptEvent) {
+			installStatus.textContent = 'La opción de instalación ya no está disponible. Recarga la página e inténtalo de nuevo.';
+			return;
+		}
+
+		const promptEvent = installPromptEvent;
+		installPromptEvent = null;
+		installButton.hidden = true;
+		installButton.disabled = true;
+		installStatus.textContent = 'Abriendo la opción de instalación...';
+
+		try {
+			Promise.resolve(promptEvent.prompt())
+				.then(() => promptEvent.userChoice)
+				.then(({ outcome }) => {
+					installStatus.textContent = outcome === 'accepted'
+						? '¡Aplicación instalada!'
+						: 'La instalación se canceló. Puedes instalarla desde el menú del navegador.';
+				})
+				.catch((error) => {
+					console.error('No se pudo iniciar la instalación:', error);
+					installStatus.textContent = 'No se pudo iniciar la instalación. Inténtalo de nuevo desde el menú del navegador.';
+				})
+				.finally(() => {
+					installButton.disabled = false;
+				});
+		} catch (error) {
+			console.error('No se pudo iniciar la instalación:', error);
+			installStatus.textContent = 'No se pudo iniciar la instalación. Inténtalo de nuevo desde el menú del navegador.';
+			installButton.disabled = false;
+		}
+	});
+
+	window.addEventListener('appinstalled', () => {
+		installPromptEvent = null;
+		installButton.hidden = true;
+		installStatus.textContent = '¡PokéPWA se instaló correctamente!';
+	});
+}
 
 if ('serviceWorker' in navigator && window.isSecureContext) {
 	window.addEventListener('load', () => {

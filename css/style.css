@@ -43,6 +43,36 @@ main {
     color: #68758a;
 }
 
+.install-button {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(32, 43, 60, 0.18);
+}
+
+.install-button[hidden] {
+    display: none;
+}
+
+.install-status {
+    position: fixed;
+    top: 4.75rem;
+    right: 1rem;
+    z-index: 10;
+    max-width: min(20rem, calc(100vw - 2rem));
+    padding: 0.5rem 0.75rem;
+    background: #ffffff;
+    border-radius: 8px;
+    color: #68758a;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px rgba(32, 43, 60, 0.12);
+}
+
+.install-status:empty {
+    display: none;
+}
+
 .detail-nav {
     padding: 1rem 0 2rem;
     display: flex;
